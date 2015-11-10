@@ -19,6 +19,8 @@ import java.util.TreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import reader.ReaderCW.TrianglesAndTriplets;
+
 public class MapUtil {
 	
 	static Logger log = LogManager.getLogger("de.tudarmstadt.lt.util");
@@ -136,17 +138,21 @@ public class MapUtil {
 		}
 	}
 	
-	public static void writeMap2(Map<Integer, Set<Integer>> map, Map<Integer, Integer> nbTriangles, Map<Integer,String> nodesMapItoS , Writer writer, String keyValSep, String entrySep) throws IOException
+	public static void writeMap2(Map<Integer, Set<Integer>> map, TrianglesAndTriplets trianglesTriplets, Map<Integer,String> nodesMapItoS , Map<Integer, Integer> eigenvectorCentralityScores, Writer writer, String keyValSep, String entrySep) throws IOException
 	{
 		for (Entry<Integer, Set<Integer>> entry : map.entrySet()) {
 			writer.write(nodesMapItoS.get(entry.getKey()).toString());
 			writer.write(keyValSep);
-			writer.write(nbTriangles.get(entry.getKey()).toString());
+			writer.write(trianglesTriplets.getTriangles().get(entry.getKey()).toString());
+			writer.write(keyValSep);
+			writer.write(trianglesTriplets.getTriplets().get(entry.getKey()).toString());
+			writer.write(keyValSep);
+			writer.write(trianglesTriplets.clusteringCoefficient(entry.getKey()).toString());
 			writer.write(keyValSep);
 			//System.out.println(entry.getValue());
 			//System.out.println(nodesMapItoS.get(entry.getValue()));
 			for (Integer node : entry.getValue()){
-				writer.write(nodesMapItoS.get(node).toString() + ",");
+				writer.write(nodesMapItoS.get(node).toString()+ ":" + eigenvectorCentralityScores.get(node) + ",");
 			}
 			writer.write(entrySep);
 		}
@@ -159,26 +165,52 @@ public class MapUtil {
 		writer.close();
 	}
 	
-	public static String toString(Map<Integer, Set<Integer>> map, Map<Integer, Integer> nbTriangles, Map<Integer, String> nodesMapItoS, String keyValSep, String entrySep) {
+	public static String toString(Map<Integer, Set<Integer>> map, TrianglesAndTriplets nbTriangles, Map<Integer, String> nodesMapItoS, Map<Integer, Integer> eigenvectorCentralityScores, String keyValSep, String entrySep) {
 		StringWriter writer = new StringWriter();
 		try {
-			writeMap2(map, nbTriangles, nodesMapItoS, writer, keyValSep, entrySep);
+			writeMap2(map, nbTriangles, nodesMapItoS, eigenvectorCentralityScores, writer, keyValSep, entrySep);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return writer.toString();
 	}
 	
-	public static String toString(Map<Integer, Set<Integer>> map, Map<Integer,String> nodesMapItoS,String keyValSep, String entrySep) {
+	public static String toString(Map<Integer, Set<Integer>> map, TrianglesAndTriplets trianglesTriplets, Map<Integer,String> nodesMapItoS, String keyValSep, String entrySep) {
 		StringWriter writer = new StringWriter();
 		try {
-			writeMap(map, nodesMapItoS, writer, keyValSep, entrySep);
+			writeMap3(map, trianglesTriplets, nodesMapItoS, writer, keyValSep, entrySep);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return writer.toString();
 	}
 	
+	private static void writeMap3(Map<Integer, Set<Integer>> map,
+			TrianglesAndTriplets trianglesTriplets,
+			Map<Integer, String> nodesMapItoS, StringWriter writer,
+			String keyValSep, String entrySep) throws IOException{
+		for (Entry<Integer, Set<Integer>> entry : map.entrySet()) {
+			writer.write(nodesMapItoS.get(entry.getKey()).toString());
+			writer.write(keyValSep);
+			writer.write(String.valueOf(entry.getValue().size()));
+			writer.write(keyValSep);
+			writer.write(trianglesTriplets.getTriangles().get(entry.getKey()).toString());
+			writer.write(keyValSep);
+			writer.write(trianglesTriplets.getTriplets().get(entry.getKey()).toString());
+			writer.write(keyValSep);
+			writer.write(trianglesTriplets.clusteringCoefficient(entry.getKey()).toString());
+			writer.write(keyValSep);
+			//System.out.println(entry.getValue());
+			//System.out.println(nodesMapItoS.get(entry.getValue()));
+			int size = 0;
+			for (Integer node : entry.getValue()){
+				writer.write(nodesMapItoS.get(node).toString()+ ",");
+				size++;
+			}
+			writer.write(entrySep);
+		}
+	}
+
 	/**
 	 * Gets the value of <code>key</code> in <code>map</code>, creating
 	 * a new instance of <code>valueClass</code> as value of <code>key</code> if

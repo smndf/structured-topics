@@ -42,17 +42,19 @@ public class HypernymsSearch {
 
 			int noLine = 0;
 			while ( (line = clusters.readLine()) != null){ 
-				if (line.split("\t").length>1){
+				if (line.split("\t").length>2){
 					cluster.clear();
 					System.out.println("nouvelle ligne" + noLine++);
-					String words =  line.split("\t")[1];
+					int nbTriangles = Integer.valueOf(line.split("\t")[1]);
+					String words =  line.split("\t")[2];
 					for (int i=0;i<words.split(",").length;i++){
 						cluster.add(words.split(",")[i]);
 					}
 					if (cluster.size()>2){					
 						Set<Hypernym> frequentHypernyms = frequentHypernyms(cluster);
 						//System.out.println("Best hypernyms : " + frequentHypernyms.toString());
-						writeFile(outputFile,fw,noLine,frequentHypernyms,cluster,cluster.size());
+						writeFile(outputFile,fw,noLine,frequentHypernyms,cluster,cluster.size(),nbTriangles
+								);
 					} else {
 						System.out.println("cluster removed due to low size.");
 					}
@@ -69,9 +71,9 @@ public class HypernymsSearch {
 	}
 
 	private void writeFile(String outputFile, FileWriter fw , int noLine, Set<Hypernym> frequentHypernyms,
-			Set<String> cluster, int clusterSize) throws IOException {
+			Set<String> cluster, int clusterSize, int nbTriangles) throws IOException {
 
-		String line = noLine + "\t" + clusterSize + "\t" + toString(frequentHypernyms,cluster) + "\t" + toString(cluster) +"\n";
+		String line = noLine + "\t" + clusterSize + "\t" + nbTriangles +"\t" + toString(frequentHypernyms,cluster) + "\t" + toString(cluster) +"\n";
 		fw.write (line);
 
 	}

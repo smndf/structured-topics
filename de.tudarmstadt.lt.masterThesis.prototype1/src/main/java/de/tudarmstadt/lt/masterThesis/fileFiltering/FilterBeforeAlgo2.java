@@ -2,6 +2,8 @@ package de.tudarmstadt.lt.masterThesis.fileFiltering;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,13 +20,13 @@ import java.util.Map;
 
 public class FilterBeforeAlgo2 {
 
-	public void filter(String inputFile, Map<String, Integer> freqMap, int freqThreshold) {
+	public void filter(String inputFile, Map<String, Integer> freqMap, int freqThreshold) throws FileNotFoundException {
 
-		String outputFile = /*inputFile.substring(0, inputFile.length() - 4) +*/ "Filtered2.txt";
+		String outputFile = inputFile.substring(0, inputFile.length() - 4) + "FiltBef2.txt";
 		File fo = new File(outputFile);
 
 		InputStream is = getClass().getResourceAsStream(inputFile);
-		BufferedReader input = new BufferedReader(new InputStreamReader(is));
+		BufferedReader input = new BufferedReader(new FileReader(inputFile));
 
 		String[] lineSplit = new String[3];
 		String line = null;
@@ -51,7 +53,7 @@ public class FilterBeforeAlgo2 {
 						else {
 							word = lineSplit[0];
 						}
-						sw.write("\n" + word + "\t");
+						sw.write( word + "\t");
 
 						if (lineSplit.length>2){
 							nbWords = 0;
@@ -72,6 +74,7 @@ public class FilterBeforeAlgo2 {
 						if (nbWords>2){
 							//System.out.println(nbWords);
 							sw.getBuffer().setLength(sw.toString().length() - 2);
+							sw.write("\n");
 							fw.write (sw.toString());
 						}
 						sw.getBuffer().setLength(0);								

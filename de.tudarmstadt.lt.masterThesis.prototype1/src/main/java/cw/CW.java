@@ -116,7 +116,7 @@ public class CW<N> {
 		
 		int numSteps = 0;
 		do {
-			if (numSteps > 100) {
+			if (numSteps > 200) {
 				System.out.println("Too many steps!");
 			}
 			changeInPrevStep = false;

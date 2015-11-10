@@ -2,21 +2,27 @@ package reader;
 
 import java.io.IOException;
 
+
+
 public class MainCWMCL {
 
 	public static void main(String[] args) throws IOException {
 
-		
-		String fileName = "";
+
+		String fileName;
 		if (args.length==0){
-			fileName = "/Filtered1.txt";			
+			System.out.println("No input file");
+			fileName ="test.txt";
+			System.out.println("fileName = " + fileName);
+			ReaderCW fr = new ReaderCW();
+			fr.readTextFile("/"+fileName,false);
 		} else {
-			fileName = args[0];
+			fileName = args[0] ;
+			System.out.println("fileName = " + fileName);
+			ReaderCW fr = new ReaderCW();
+			fr.readTextFile(args[0],true);
 		}
-		System.out.println("fileName = " + fileName);
 		
-		ReaderCW fr = new ReaderCW();
-		fr.readTextFile(fileName);
 		
 		/*
 		ReaderMCLSparse rMCL = new ReaderMCLSparse();		

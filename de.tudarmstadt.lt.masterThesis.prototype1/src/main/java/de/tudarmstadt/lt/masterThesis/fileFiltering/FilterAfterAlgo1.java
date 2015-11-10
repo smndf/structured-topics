@@ -2,6 +2,8 @@ package de.tudarmstadt.lt.masterThesis.fileFiltering;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,13 +15,13 @@ import java.util.Map;
 
 public class FilterAfterAlgo1 {
 
-	public void filter(String inputFile, Map<String, Integer> freqMap, int freqThreshold) {
+	public void filter(String inputFile, Map<String, Integer> freqMap, int freqThreshold) throws FileNotFoundException {
 
-		String outputFile = inputFile.substring(1, inputFile.length() - 4) + "Filtered.txt";
+		String outputFile = inputFile.substring(0, inputFile.length() - 4) + "FiltAft.txt";
 		File fo = new File(outputFile);
 
-		InputStream is = getClass().getResourceAsStream(inputFile);
-		BufferedReader input = new BufferedReader(new InputStreamReader(is));
+		//InputStream is = getClass().getResourceAsStream(inputFile);
+		BufferedReader input = new BufferedReader(new FileReader(inputFile));
 
 		String[] lineSplit = new String[2];
 		String line = null;
@@ -33,11 +35,12 @@ public class FilterAfterAlgo1 {
 			while ( (line = input.readLine()) != null){ 
 				lineSplit = line.split("\t");
 				nbWords = 0;
-				if (lineSplit.length>1){
+				if (lineSplit.length>2){
 					//System.out.println("dsfs");
-					ArrayList<String> neighboursSplit = new ArrayList<String>(Arrays.asList(lineSplit[1].split(",")));
+					ArrayList<String> neighboursSplit = new ArrayList<String>(Arrays.asList(lineSplit[2].split(",")));
 					sw.write(ctr + "\t");
 					ctr++;
+					sw.write(lineSplit[1] + "\t");
 					for (String neighbour : neighboursSplit){
 						//neighbours.add(neighbourSp.split(":")[0]);
 						// if node already added							

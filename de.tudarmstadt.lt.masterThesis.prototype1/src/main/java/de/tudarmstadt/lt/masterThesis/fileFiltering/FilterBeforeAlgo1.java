@@ -2,6 +2,8 @@ package de.tudarmstadt.lt.masterThesis.fileFiltering;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +17,13 @@ import java.io.StringWriter;
 
 public class FilterBeforeAlgo1 {
 
-	public void filter(String inputFile) {
+	public void filter(String inputFile) throws FileNotFoundException {
 
-		String outputFile = /*inputFile.substring(0, inputFile.length() - 4) +*/ "Filtered1.txt";
+		String outputFile = inputFile.substring(0, inputFile.length() - 4) + "FiltBef1.txt";
 		File fo = new File(outputFile);
 
-		InputStream is = getClass().getResourceAsStream(inputFile);
-		BufferedReader input = new BufferedReader(new InputStreamReader(is));
+		//InputStream is = getClass().getResourceAsStream(inputFile);
+		BufferedReader input = new BufferedReader(new FileReader(inputFile));
 
 		String[] lineSplit = new String[3];
 		String line = null;
