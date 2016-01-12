@@ -1,27 +1,43 @@
 package louvainmethod;
+
+
 import java.io.IOException;
+
 
 
 public class MainLMConversions {
 
 	public static void main(String[] args) {
-		
-		
-		
-		LMGraphConversion lmgc = new LMGraphConversion();
-		try {
-			lmgc.convertToLM("/Filtered1.txt");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		/*
-		String inputFile = "/Filtered1LM_lvl2.txt";
-		String mapFile = "/mapItoS.txt";
-		Clusters c = new Clusters();
-		c.convertFromLM(inputFile, mapFile);
-		*/
-	}
 
+		if (args.length<2){
+			System.out.println("Not enough arguments : \nbef InputFileName\nor\naft InputFileName MapIntegerToString OutputFile");
+		} else {
+			switch (args[0]) {
+			case "bef":  
+				LMGraphConversion lmgc = new LMGraphConversion();
+				try {
+					lmgc.convertToLM(args[1]);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+				break; 
+			case "aft":  
+				if (args.length<4){
+					System.out.println("Not enough arguments : aft InputFile MapIntegerToString OutputFile");
+				} else {
+					Clusters c = new Clusters();
+					String outputFile = args[3];
+					try {
+						c.convertFromLM(args[1], args[2],outputFile);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				break;
+			default : System.out.println("No correct argument (bef or aft)");
+			}
+		}	 
+	}
 }

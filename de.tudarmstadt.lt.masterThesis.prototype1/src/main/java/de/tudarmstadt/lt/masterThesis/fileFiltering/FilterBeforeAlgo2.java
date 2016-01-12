@@ -44,40 +44,37 @@ public class FilterBeforeAlgo2 {
 				lineSplit = line.split("\t");
 				if (lineSplit[0].split("#").length>1){
 					pos = lineSplit[0].split("#")[1]; 
-					if (pos.equals("NN") || pos.equals("NP") || pos.equals("JJ") /*|| pos.equals("RB")*/){
+					if (pos.equals("NN") || pos.equals("NP") /* || pos.equals("JJ") || pos.equals("RB")*/){
 
 						String word;
-						if (lineSplit.length>1) {
-							word = lineSplit[0] + "#" + lineSplit[1];
-						}
-						else {
-							word = lineSplit[0];
-						}
-						sw.write( word + "\t");
-
 						if (lineSplit.length>2){
-							nbWords = 0;
-							ArrayList<String> neighboursSplit = new ArrayList<String>(Arrays.asList(lineSplit[2].split(",")));
-							for (String neighbour : neighboursSplit){
-								if (neighbour.split("#").length>1){
-									pos = neighbour.split("#")[1];		
-									if (pos.equals("NN") || pos.equals("NP") || pos.equals("JJ") /*|| pos.equals("RB")*/){	
-										String term = neighbour.split("#")[0] + "#" + neighbour.split("#")[1];
-										if (freqMap.containsKey(term) && freqMap.get(term) > freqThreshold){
-											sw.write(neighbour + ",");
-											nbWords++;
+							if (lineSplit[0].split(",").length==1 && lineSplit[1].split(":").length==1){
+								word = lineSplit[0] + "#" + lineSplit[1];
+								sw.write( word + "\t");
+
+								nbWords = 0;
+								ArrayList<String> neighboursSplit = new ArrayList<String>(Arrays.asList(lineSplit[2].split(",")));
+								for (String neighbour : neighboursSplit){
+									if (neighbour.split("#").length>1){
+										pos = neighbour.split("#")[1];		
+										if (pos.equals("NN") || pos.equals("NP")/* || pos.equals("JJ") || pos.equals("RB")*/){	
+											String term = neighbour.split("#")[0] + "#" + neighbour.split("#")[1];
+											if (freqMap.containsKey(term) && freqMap.get(term) > freqThreshold){
+												sw.write(neighbour + ",");
+												nbWords++;
+											}
 										}
 									}
 								}
+								if (nbWords>2){
+									//System.out.println(nbWords);
+									sw.getBuffer().setLength(sw.toString().length() - 1);
+									sw.write("\n");
+									fw.write (sw.toString());
+								}
+								sw.getBuffer().setLength(0);								
 							}
 						}
-						if (nbWords>2){
-							//System.out.println(nbWords);
-							sw.getBuffer().setLength(sw.toString().length() - 2);
-							sw.write("\n");
-							fw.write (sw.toString());
-						}
-						sw.getBuffer().setLength(0);								
 					}
 				}
 			}

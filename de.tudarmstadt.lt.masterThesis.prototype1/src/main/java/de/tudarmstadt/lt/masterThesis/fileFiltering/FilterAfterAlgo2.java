@@ -1,9 +1,9 @@
 package de.tudarmstadt.lt.masterThesis.fileFiltering;
 
-import graph.ArrayBackedGraph;
-import graph.ClusteringCoefComp.TrianglesAndTriplets;
+import graph.ClusteringCoefComp;
 import graph.Graph;
 import graph.ResultatBuildGraph;
+import graph.ClusteringCoefComp.TrianglesAndTriplets;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,8 +11,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,12 +20,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import util.MapUtil;
-import graph.ClusteringCoefComp;
+public class FilterAfterAlgo2 {
 
-public class FilterAfterAlgo1 {
-
-	public void filter(String inputFile, ResultatBuildGraph res, Map<String, Integer> freqMap, int freqThreshold) throws FileNotFoundException {
+	public void filter(String inputFile, ResultatBuildGraph res) throws FileNotFoundException {
 
 		String outputFile = inputFile.substring(0, inputFile.length() - 4) + "FiltAft.txt";
 		//File fo = new File(outputFile);
@@ -59,23 +54,16 @@ public class FilterAfterAlgo1 {
 					//sw.write(ctr + "\t");
 					ctr++;
 					//sw.write(lineSplit[1] + "\t");
-					for (String neighbour : neighboursSplit){
-						//neighbours.add(neighbourSp.split(":")[0]);
-						// if node already added							
-						if (neighbour.split("#").length>1){
-							String pos = neighbour.split("#")[1];		
-							if (pos.equals("NN") || pos.equals("NP") /*|| pos.equals("JJ") || pos.equals("RB")*/){	
-								String term = neighbour.split("#")[0] + "#" + neighbour.split("#")[1];
-								if (freqMap.containsKey(term) && freqMap.get(term) > freqThreshold){
-									//sw.write(neighbour + ",");	
-									nbWords++;
-									cluster.add(nodesMapStoI.get(neighbour));
-									if (nodesMapStoI.get(neighbour)==null){
-										System.out.println("nodesMapStoI.get("+neighbour+") = null");
-									}
-								}
-							}
+					for (String neighbour : neighboursSplit){						
+
+						//sw.write(neighbour + ",");	
+						nbWords++;
+						if (nodesMapStoI.get(neighbour) == null){
+							System.out.println("nodesMapStoI.get("+neighbour+") == null");
+						} else {							
+							cluster.add(nodesMapStoI.get(neighbour));
 						}
+
 					}
 					if (nbWords>2){
 						//sw.getBuffer().setLength(sw.toString().length() - 2);
@@ -88,14 +76,17 @@ public class FilterAfterAlgo1 {
 				//sw.getBuffer().setLength(0);
 			}
 			ClusteringCoefComp ccc = new ClusteringCoefComp();
+			System.out.println("Compute number triangles and triplets");
 			TrianglesAndTriplets trianglesTriplets = ccc.trianglesAndTriplets(g,clusters);
-			
-			
+
+
 			File fo = new File(outputFile);
 			try{
 				FileWriter fw = new FileWriter (fo);
 				//fw.write (MapUtil.toString(clusters,trianglesTriplets,nodesMapItoS,eigenvectorCentralityScores,"\t","\n"));
+				System.out.println("Write results in "+outputFile);
 				fw.write (toString(clusters,trianglesTriplets,nodesMapItoS,"\t","\n"));
+				fw.flush();
 				fw.close();
 				System.out.println("results written in " + outputFile);
 			}
@@ -103,7 +94,7 @@ public class FilterAfterAlgo1 {
 			{
 				System.out.println (exception.getMessage());
 			}
-			
+
 			//fw.close();
 			//sw.close();
 			System.out.println("file modified, new file : " + outputFile);
@@ -113,7 +104,7 @@ public class FilterAfterAlgo1 {
 			e.printStackTrace();
 		}		
 	}
-	
+
 	public static String toString(Map<Integer, Set<Integer>> map, TrianglesAndTriplets trianglesTriplets, Map<Integer,String> nodesMapItoS, String keyValSep, String entrySep) {
 		StringWriter writer = new StringWriter();
 		try {
@@ -128,7 +119,9 @@ public class FilterAfterAlgo1 {
 			TrianglesAndTriplets trianglesTriplets,
 			Map<Integer, String> nodesMapItoS, StringWriter writer,
 			String keyValSep, String entrySep) throws IOException{
+		int i = 0;
 		for (Entry<Integer, Set<Integer>> entry : map.entrySet()) {
+			//System.out.println("line "+i++);
 			writer.write(entry.getKey().toString());
 			writer.write(keyValSep);
 			writer.write(String.valueOf(entry.getValue().size()));
@@ -143,11 +136,15 @@ public class FilterAfterAlgo1 {
 			//System.out.println(nodesMapItoS.get(entry.getValue()));
 			int size = 0;
 			for (Integer node : entry.getValue()){
-				writer.write(nodesMapItoS.get(node).toString()+ ",");
+				if (node != null){
+					writer.write(nodesMapItoS.get(node).toString()+ ",");
+				} else {					
+					System.out.println("null node");
+				}
+				//writer.write("node"+node+ ",");
 				size++;
 			}
 			writer.write(entrySep);
 		}
 	}
-
 }

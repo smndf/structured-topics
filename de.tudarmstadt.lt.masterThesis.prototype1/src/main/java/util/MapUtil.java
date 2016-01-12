@@ -184,6 +184,7 @@ public class MapUtil {
 		}
 		return writer.toString();
 	}
+
 	
 	private static void writeMap3(Map<Integer, Set<Integer>> map,
 			TrianglesAndTriplets trianglesTriplets,

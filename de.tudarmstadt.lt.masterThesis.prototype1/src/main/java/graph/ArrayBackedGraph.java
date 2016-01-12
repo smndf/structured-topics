@@ -40,7 +40,7 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 	public int getSize() {
 		return nodes.cardinality();
 	}
-
+	
 	public Iterator<Integer> iterator() {
 		return new Iterator<Integer>() {
 			int next = nodes.nextSetBit(0);
@@ -120,10 +120,37 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 		}
 	}
 
+	
 	public Iterator<Integer> getNeighbors(Integer node) {
+	
+		if (edgeSources == null) {
+			System.out.println("edgeSources = null");
+			return Collections.<Integer>emptyList().iterator();
+		}
+		if (node == null){
+			System.out.println("Integer node is null ");
+		}
+		try{
+			if (node > edgeSources.length){
+				System.out.println("node : " + node);
+				System.out.println("edgeSources.length : " + edgeSources.length);
+			}			
+		} catch (NullPointerException e) {
+			System.out.println("NullPointerException");
+			return Collections.<Integer>emptyList().iterator();
+		} 
+		
+		
+		
 		if (edgeSources[node] == null) {
+		
+			
+			
+			
 			return Collections.<Integer>emptyList().iterator();
 		} else {
+		
+			
 			return edgeSources[node].iterator();
 		}
 	}

@@ -37,12 +37,20 @@ public class FilterBeforeAlgo1 {
 			while ( (line = input.readLine()) != null){ 
 				lineSplit = line.split("\t");
 				if (lineSplit.length>2){
-					sw.write(lineSplit[0] + "#" + lineSplit[1] + "\t" + lineSplit[2] + "\n");
-					fw.write (sw.toString());
-					sw.getBuffer().setLength(0);
+					if (lineSplit[0].split(",").length==1 && lineSplit[1].split(":").length==1){
+						sw.write(lineSplit[0] + "#" + lineSplit[1] + "\t"); 
+						for (String s : lineSplit[2].split(",")){
+							if (s.split(":").length==2 && isFloat(s.split(":")[1])){
+								sw.write(s + ","); 
+							}
+						}
+						sw.getBuffer().setLength(sw.getBuffer().length()-1);
+						sw.write("\n");
+						fw.write (sw.toString());
+						sw.getBuffer().setLength(0);
+					}
 				}
 			}
-
 			fw.close();
 			sw.close();
 			System.out.println("file modified, new file : " + outputFile);
@@ -52,4 +60,16 @@ public class FilterBeforeAlgo1 {
 			e.printStackTrace();
 		}		
 	}
+	
+	private boolean isFloat(String string) {
+		try {
+			Float.parseFloat(string);
+			return true;
+		}
+		catch (NumberFormatException ex) {
+			return false;
+		}
+	}
+	
 }
+

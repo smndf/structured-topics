@@ -1,6 +1,7 @@
 package louvainmethod;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,11 +28,11 @@ public class LMGraphConversion {
 		//System.out.println("...");
 
 
-		
-		String outputFile = inputFile.substring(1, inputFile.length()-4) + "LM.txt";
-		InputStream is = getClass().getResourceAsStream(inputFile);
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
+		String outputFile = inputFile.split("/")[inputFile.split("/").length-1].substring(0, inputFile.length()-4) + "LM.txt";
+		//InputStream is = getClass().getResourceAsStream(inputFile);
+		//BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		BufferedReader br = new BufferedReader(new FileReader(inputFile));
 		File fo = new File(outputFile);
 		try{
 
@@ -110,7 +111,7 @@ public class LMGraphConversion {
 
 
 			// write map into file			
-			String mapFile = "mapItoS.txt";
+			String mapFile = "mapItoS" + inputFile.split("/")[inputFile.split("/").length-1];
 			writeNodesNames(mapItoS,mapFile);
 
 
@@ -126,7 +127,7 @@ public class LMGraphConversion {
 		{
 			System.err.println ("Erreur lors de la lecture : " + exception.getMessage());
 		}
-
+		br.close();
 	}
 
 	private String mapToString(Map<String, Integer> freqMap, int i) {

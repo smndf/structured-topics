@@ -7,7 +7,7 @@
       value="net.didion.jwnl.princeton.data.PrincetonWN16FileDictionaryElementFactory"/>
 <param name="file_manager" value="net.didion.jwnl.dictionary.file_manager.FileManagerImpl">
 <param name="file_type" value="net.didion.jwnl.princeton.file.PrincetonRandomAccessDictionaryFile"/>
-<param name="dictionary_path" value="src/main/resources/dict"/>
+<param name="dictionary_path" value="/home/simondif/structured-topics/dict"/>
 </param>
 </dictionary>
 <resource class="PrincetonResource"/>

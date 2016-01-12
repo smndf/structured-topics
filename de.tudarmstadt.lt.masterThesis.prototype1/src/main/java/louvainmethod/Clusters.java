@@ -1,6 +1,8 @@
 package louvainmethod;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,13 +19,13 @@ import java.util.Map.Entry;
 
 public class Clusters {
 
-	public void convertFromLM(String inputFile, String mapFile) {
+	public void convertFromLM(String inputFile, String mapFile, String outputFile) throws IOException {
 		System.out.println("");
 		Map<Integer,Set<Integer>> clustersMap = buildClustersMap(inputFile);
 
 		Map<Integer,String> mapItoS = readNodesNames(mapFile);
 
-		String outputFile = "clusters" +inputFile.substring(1, inputFile.length()-4) + ".txt";
+		//String outputFile = "clusters" +inputFile.substring(0, inputFile.length()-4) + ".txt";
 		writeClusters(clustersMap,mapItoS,outputFile);
 
 	}
@@ -68,10 +70,11 @@ public class Clusters {
 		return writer.toString();
 	}
 
-	private Map<Integer, String> readNodesNames(String mapFile) {
+	private Map<Integer, String> readNodesNames(String mapFile) throws IOException {
 
-		InputStream is2 = getClass().getResourceAsStream(mapFile);
-		BufferedReader mapText = new BufferedReader(new InputStreamReader(is2));
+		//InputStream is2 = getClass().getResourceAsStream(mapFile);
+		//BufferedReader mapText = new BufferedReader(new InputStreamReader(is2));
+		BufferedReader mapText = new BufferedReader(new FileReader(mapFile));
 		Map<Integer,String> mapItoS = new HashMap<Integer,String>();
 		String[] lineSplit = new String[2];
 		String line = null;
@@ -88,7 +91,8 @@ public class Clusters {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
+		mapText.close();
 		return mapItoS;
 	}
 
@@ -118,6 +122,14 @@ public class Clusters {
 		for (Entry<Integer,Set<Integer>> entry : clustersMap.entrySet()) {
 			sw.write(entry.getKey().toString());
 			sw.write("\t");
+			sw.write("0");
+			sw.write("\t");
+			sw.write("0");
+			sw.write("\t");
+			sw.write("0");
+			sw.write("\t");
+			sw.write("0.0");
+			sw.write("\t");
 			for (Integer node : entry.getValue()){
 				String tmp = mapItoS.get(node);
 				/*if (tmp.split("#").length > 0){
@@ -135,9 +147,10 @@ public class Clusters {
 		return sw.toString();
 	}
 
-	private Map<Integer,Set<Integer>> buildClustersMap(String inputFile){
-		InputStream is = getClass().getResourceAsStream(inputFile);
-		BufferedReader br = new BufferedReader(new InputStreamReader(is));
+	private Map<Integer,Set<Integer>> buildClustersMap(String inputFile) throws IOException{
+		//InputStream is = getClass().getResourceAsStream(inputFile);
+		//BufferedReader br = new BufferedReader(new InputStreamReader(is));
+		BufferedReader br = new BufferedReader(new FileReader(inputFile));
 		Map<Integer,Set<Integer>> clustersMap = new HashMap<Integer,Set<Integer>>();
 		String[] lineSplit = new String[2];
 		String line = null;
@@ -166,7 +179,7 @@ public class Clusters {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		br.close();
 		return clustersMap;
 	}
 
