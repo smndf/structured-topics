@@ -99,10 +99,14 @@ public class MarkovClusteringSparse {
 		// main iteration
 		while (residual > maxResidual) {
 			System.out.println(i);
-			i++;
+			System.out.println("expand "+i);
 			a = expand(a);
+			System.out.println("OK");
+			System.out.println("inflate "+i);
 			residual = inflate(a, pGamma, maxZero);
-			//	            a.round(2);
+			System.out.println("OK");
+			i++;
+//	            a.round(2);
 		}
 		return a;
 

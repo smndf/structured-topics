@@ -115,14 +115,18 @@ public class CW<N> {
 		init(graph);
 		
 		int numSteps = 0;
-		do {
+		while (numSteps<200){
+			step();
+			numSteps++;
+		}
+		/*do {
 			if (numSteps > 200) {
 				System.out.println("Too many steps!");
 			}
 			changeInPrevStep = false;
 			step();
 			numSteps++;
-		} while (changeInPrevStep);
+		} while (changeInPrevStep);*/
 
 		return getClusters();
 	}

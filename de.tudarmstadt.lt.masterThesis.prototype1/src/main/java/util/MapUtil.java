@@ -1,5 +1,8 @@
 package util;
 
+import graph.ClusterMetrics.TrianglesAndTriplets;
+import graph.ResultatBuildGraph;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -19,7 +22,6 @@ import java.util.TreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import reader.ReaderCW.TrianglesAndTriplets;
 
 public class MapUtil {
 	
@@ -175,22 +177,39 @@ public class MapUtil {
 		return writer.toString();
 	}
 	
-	public static String toString(Map<Integer, Set<Integer>> map, TrianglesAndTriplets trianglesTriplets, Map<Integer,String> nodesMapItoS, String keyValSep, String entrySep) {
+	public static String toString(Map<Integer, List<Integer>> centralityScoresSorted, TrianglesAndTriplets trianglesTriplets, Map<Integer,String> nodesMapItoS, String keyValSep, String entrySep) {
 		StringWriter writer = new StringWriter();
 		try {
-			writeMap3(map, trianglesTriplets, nodesMapItoS, writer, keyValSep, entrySep);
+			writeMap3(centralityScoresSorted, trianglesTriplets, nodesMapItoS, writer, keyValSep, entrySep);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return writer.toString();
 	}
-
 	
-	private static void writeMap3(Map<Integer, Set<Integer>> map,
+
+	public static String toString(ResultatBuildGraph graph,
+			Map<Integer, Set<Integer>> clusters, String keyValSep, String entrySep) {
+		StringWriter writer = new StringWriter();
+		Integer noCluster = 0;
+		for (Entry<Integer, Set<Integer>> entry : clusters.entrySet()) {
+			writer.write(noCluster.toString());
+			writer.write(keyValSep);
+			for (Integer node : entry.getValue()){
+				writer.write(graph.getNodesMapItoS().get(node).toString()+ ",");
+			}
+			writer.write(entrySep);
+			noCluster++;
+		}
+		writer.getBuffer().setLength(writer.getBuffer().length()-entrySep.length()-1);
+		return writer.toString();
+	}
+	
+	private static void writeMap3(Map<Integer, List<Integer>> centralityScoresSorted,
 			TrianglesAndTriplets trianglesTriplets,
 			Map<Integer, String> nodesMapItoS, StringWriter writer,
 			String keyValSep, String entrySep) throws IOException{
-		for (Entry<Integer, Set<Integer>> entry : map.entrySet()) {
+		for (Entry<Integer, List<Integer>> entry : centralityScoresSorted.entrySet()) {
 			writer.write(nodesMapItoS.get(entry.getKey()).toString());
 			writer.write(keyValSep);
 			writer.write(String.valueOf(entry.getValue().size()));
@@ -205,9 +224,11 @@ public class MapUtil {
 			//System.out.println(nodesMapItoS.get(entry.getValue()));
 			int size = 0;
 			for (Integer node : entry.getValue()){
+				System.out.print(node+" ");
 				writer.write(nodesMapItoS.get(node).toString()+ ",");
 				size++;
 			}
+			writer.getBuffer().setLength(writer.getBuffer().length()-2);
 			writer.write(entrySep);
 		}
 	}
@@ -280,4 +301,5 @@ public class MapUtil {
 		val += num;
 		map.put(key, val);
 	}
+
 }
